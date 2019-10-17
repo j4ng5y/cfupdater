@@ -13,7 +13,7 @@ import (
 //     None
 //
 // Returns:
-//     (*DNSRecordResponse): The response from IPInfo if sucessful, nil otherwise
+//     (*DNSRecordResponse): The response from IPInfo if successful, nil otherwise
 //     (error):              An error if one exists, nil otherwise
 func (I *IPInfoRequest) Get() (*IPInfoResponse, error) {
 	response := new(IPInfoResponse)

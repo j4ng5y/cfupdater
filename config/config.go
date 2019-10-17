@@ -77,7 +77,7 @@ func New(filePath string) (*Config, error) {
 
 // Write creates a configuration file to be consumed
 //
-// Arugments:
+// Arguments:
 //    None
 //
 // Returns:

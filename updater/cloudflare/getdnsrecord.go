@@ -13,7 +13,7 @@ import (
 //     None
 //
 // Returns:
-//     (*DNSRecordResponse): The response from CloudFlare if sucessful, nil otherwise
+//     (*DNSRecordResponse): The response from CloudFlare if successful, nil otherwise
 //     (error):              An error if one exists, nil otherwise
 func (D *DNSRecordRequest) Get() (*DNSRecordResponse, error) {
 	client := http.DefaultClient

@@ -14,7 +14,7 @@ import (
 //     None
 //
 // Returns:
-//     (*DNSRecordResponse): The response from CloudFlare if sucessful, nil otherwise
+//     (*DNSRecordResponse): The response from CloudFlare if successful, nil otherwise
 //     (error):              An error if one exists, nil otherwise
 func (U *UpdateDNSRecordRequest) Update() (*DNSRecordResponse, error) {
 	client := http.DefaultClient

@@ -31,7 +31,7 @@ type DNSRecordRequest struct {
 //     None
 //
 // Returns:
-//     ([]byte): The marshaled bytes if sucessful, nil otherwise
+//     ([]byte): The marshaled bytes if successful, nil otherwise
 //     (error):  An error if one exists, nil otherwise
 func (D *DNSRecordRequest) Marshal() ([]byte, error) {
 	return json.Marshal(D)
@@ -108,7 +108,7 @@ type UpdateDNSRecordRequest struct {
 //     None
 //
 // Returns:
-//     ([]byte): The marshaled bytes if sucessful, nil otherwise
+//     ([]byte): The marshaled bytes if successful, nil otherwise
 //     (error):  An error if one exists, nil otherwise
 func (U *UpdateDNSRecordRequest) Marshal() ([]byte, error) {
 	return json.Marshal(U)
