@@ -62,7 +62,7 @@ func cfupdaterFunc(ccmd *cobra.Command, args []string) {
 	}
 
 	if recResp.Result[0].Content == ipResp.IP {
-		log.Println("no update needed")
+		log.Printf("IPInfo IP Address: %s, CloudFlare DNS Record Address: %s, Result: No Update Needed\n", ipResp.IP, recResp.Result[0].Content)
 		os.Exit(0)
 	}
 
@@ -82,7 +82,7 @@ func cfupdaterFunc(ccmd *cobra.Command, args []string) {
 		log.Fatal(err)
 	}
 
-	log.Println(recUpdateResp)
+	log.Printf("IPInfo IP Address: %s, CloudFlare DNS Record Address: %s, Result: %v\n", ipResp.IP, recResp.Result[0].Content, recUpdateResp)
 }
 
 func cfupdaterConfigFunc(ccmd *cobra.Command, args []string) {
