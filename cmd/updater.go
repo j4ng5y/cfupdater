@@ -18,7 +18,7 @@ var (
 	// CFupdaterCmd is the main command of cfupdater
 	CFupdaterCmd = &cobra.Command{
 		Use:     "cfupdater",
-		Version: "0.2.1",
+		Version: "0.2.2",
 		Short:   "cfupdater is an app to update cloudflare DNS resouce records with the contents of ipinfo.io",
 		Run:     cfupdaterFunc,
 	}
