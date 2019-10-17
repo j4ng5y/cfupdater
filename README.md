@@ -1,5 +1,7 @@
 # CFUPDATER
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/j4ng5y/cfupdater)](https://goreportcard.com/report/github.com/j4ng5y/cfupdater)
+
 A fairly simple application that performs Dynamic DNS operations for a CloudFlare Resource Record.
 
 ## Installation
