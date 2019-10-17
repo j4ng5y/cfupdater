@@ -1,0 +1,10 @@
+[Unit]
+Description=CloudFlare Dynamic DNS Updater
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=24h
+Unit=cfupdater.service
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,13 @@
+[Unit]
+Description=CloudFlare Dynamic DNS Updater
+After=network.target
+
+[Service]
+Type=simple
+User=cfupdater
+WorkingDirectory=/opt/cfupdater/bin
+ExecStart=/opt/cfupdater/bin/cfupdater_linux_amd64 --config-file /opt/cfupdater/config/conf.yaml
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
