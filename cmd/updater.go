@@ -12,6 +12,7 @@ import (
 )
 
 var (
+	debug          *log.Logger
 	configFilePath string
 
 	// CFupdaterCmd is the main command of cfupdater
@@ -38,7 +39,7 @@ var (
 func cfupdaterFunc(ccmd *cobra.Command, args []string) {
 	config, err := config.New(configFilePath)
 	if err != nil {
-		log.Fatal(err)
+		debug.Fatal(err)
 	}
 
 	recReq := &cf.DNSRecordRequest{
@@ -49,7 +50,7 @@ func cfupdaterFunc(ccmd *cobra.Command, args []string) {
 	}
 	recResp, err := recReq.Get()
 	if err != nil {
-		log.Fatal(err)
+		debug.Fatal(err)
 	}
 
 	ipReq := &ip.IPInfoRequest{
@@ -58,11 +59,11 @@ func cfupdaterFunc(ccmd *cobra.Command, args []string) {
 	}
 	ipResp, err := ipReq.Get()
 	if err != nil {
-		log.Fatal(err)
+		debug.Fatal(err)
 	}
 
 	if recResp.Result[0].Content == ipResp.IP {
-		log.Printf("IPInfo IP Address: %s, CloudFlare DNS Record Address: %s, Result: No Update Needed\n", ipResp.IP, recResp.Result[0].Content)
+		debug.Printf("IPInfo IP Address: %s, CloudFlare DNS Record Address: %s, Result: No Update Needed\n", ipResp.IP, recResp.Result[0].Content)
 		os.Exit(0)
 	}
 
@@ -79,10 +80,10 @@ func cfupdaterFunc(ccmd *cobra.Command, args []string) {
 	}
 	recUpdateResp, err := recUpdateReq.Update()
 	if err != nil {
-		log.Fatal(err)
+		debug.Fatal(err)
 	}
 
-	log.Printf("IPInfo IP Address: %s, CloudFlare DNS Record Address: %s, Result: %v\n", ipResp.IP, recResp.Result[0].Content, recUpdateResp)
+	debug.Printf("IPInfo IP Address: %s, CloudFlare DNS Record Address: %s, Result: %v\n", ipResp.IP, recResp.Result[0].Content, recUpdateResp)
 }
 
 func cfupdaterConfigFunc(ccmd *cobra.Command, args []string) {
@@ -115,7 +116,14 @@ func init() {
 }
 
 func main() {
+	f, err := os.OpenFile("./debug.log", os.O_CREATE|os.O_RDWR|os.O_APPEND, 0660)
+	if err != nil {
+		log.Fatalf("unable to open debug file due to error: %v", err)
+	}
+
+	debug = log.New(f, "", log.Ldate|log.Ltime|log.Lshortfile)
+
 	if err := CFupdaterCmd.Execute(); err != nil {
-		log.Fatal(err)
+		debug.Fatal(err)
 	}
 }
