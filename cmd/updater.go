@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/j4ng5y/cfupdater/config"
 	cf "github.com/j4ng5y/cfupdater/updater/cloudflare"
@@ -41,7 +42,7 @@ func cfupdaterFunc(ccmd *cobra.Command, args []string) {
 	}
 
 	recReq := &cf.DNSRecordRequest{
-		URL:        fmt.Sprintf(""),
+		URL:        fmt.Sprintf("https://api.cloudflare.com/client/v4/zones/%s/dns_records?name=%s", config.CloudFlare.DNSRecord.ZoneID, config.CloudFlare.DNSRecord.RecordName),
 		APIToken:   config.CloudFlare.General.APIToken,
 		ZoneID:     config.CloudFlare.DNSRecord.ZoneID,
 		RecordName: config.CloudFlare.DNSRecord.RecordName,
@@ -52,7 +53,7 @@ func cfupdaterFunc(ccmd *cobra.Command, args []string) {
 	}
 
 	ipReq := &ip.IPInfoRequest{
-		URL:      fmt.Sprintf(""),
+		URL:      fmt.Sprintf("https://ipinfo.io"),
 		APIToken: config.IPInfo.General.APIToken,
 	}
 	ipResp, err := ipReq.Get()
@@ -60,8 +61,13 @@ func cfupdaterFunc(ccmd *cobra.Command, args []string) {
 		log.Fatal(err)
 	}
 
+	if recResp.Result[0].Content == ipResp.IP {
+		log.Println("no update needed")
+		os.Exit(0)
+	}
+
 	recUpdateReq := &cf.UpdateDNSRecordRequest{
-		URL:        fmt.Sprintf(""),
+		URL:        fmt.Sprintf("https://api.cloudflare.com/client/v4/zones/%s/dns_records/%s", recResp.Result[0].ZoneID, recResp.Result[0].ID),
 		APIToken:   config.CloudFlare.General.APIToken,
 		ZoneID:     config.CloudFlare.DNSRecord.ZoneID,
 		RecordName: config.CloudFlare.DNSRecord.RecordName,

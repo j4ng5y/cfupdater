@@ -2,6 +2,7 @@ package updater
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"time"
 )
@@ -25,6 +26,9 @@ func (I *IPInfoRequest) Get() (*IPInfoResponse, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", I.APIToken))
 
 	resp, err := client.Do(req)
 	if err != nil {
