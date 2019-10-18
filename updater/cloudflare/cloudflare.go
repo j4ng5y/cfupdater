@@ -2,6 +2,7 @@ package updater
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"time"
@@ -34,7 +35,11 @@ type DNSRecordRequest struct {
 //     ([]byte): The marshaled bytes if successful, nil otherwise
 //     (error):  An error if one exists, nil otherwise
 func (D *DNSRecordRequest) Marshal() ([]byte, error) {
-	return json.Marshal(D)
+	j, err := json.Marshal(D)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling DNSRecordRequest, %w", err)
+	}
+	return j, nil
 }
 
 // DNSRecordResponse is a struct that holds all the data associated with a CloudFlare DNS Record Response
@@ -83,10 +88,13 @@ type DNSRecordResponse struct {
 func (D *DNSRecordResponse) Unmarshal(body io.ReadCloser) error {
 	data, err := ioutil.ReadAll(body)
 	if err != nil {
-		return err
+		return fmt.Errorf("unable to read http body, %w", err)
 	}
 
-	return json.Unmarshal(data, D)
+	if err := json.Unmarshal(data, D); err != nil {
+		return fmt.Errorf("unabled to unmarshal http body to DNSRecordResponse, %w", err)
+	}
+	return nil
 }
 
 // UpdateDNSRecordRequest is a struct that contains the data to make a CloudFlare DNS Records Update Request
@@ -111,5 +119,9 @@ type UpdateDNSRecordRequest struct {
 //     ([]byte): The marshaled bytes if successful, nil otherwise
 //     (error):  An error if one exists, nil otherwise
 func (U *UpdateDNSRecordRequest) Marshal() ([]byte, error) {
-	return json.Marshal(U)
+	j, err := json.Marshal(U)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling UpdateDNSRecordRequest: %w", err)
+	}
+	return j, nil
 }

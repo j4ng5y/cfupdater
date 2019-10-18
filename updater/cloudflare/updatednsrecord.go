@@ -25,12 +25,12 @@ func (U *UpdateDNSRecordRequest) Update() (*DNSRecordResponse, error) {
 
 	j, err := U.Marshal()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error marshaling UpdateDNSRecordRequest, %w", err)
 	}
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPut, U.URL, bytes.NewBuffer(j))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error creating UpdateDNSRecordRequest http request, %w", err)
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -38,11 +38,11 @@ func (U *UpdateDNSRecordRequest) Update() (*DNSRecordResponse, error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error sending UpdateDNSRecordRequest http request, %w", err)
 	}
 
 	if err := response.Unmarshal(resp.Body); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error unmarshaling the DNSRecordResponse, %w", err)
 	}
 
 	if resp.StatusCode != http.StatusOK {

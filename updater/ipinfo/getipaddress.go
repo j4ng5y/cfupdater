@@ -24,19 +24,23 @@ func (I *IPInfoRequest) Get() (*IPInfoResponse, error) {
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, I.URL, nil)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error creating IPInfoRequest http request, %w", err)
 	}
 
 	req.Header.Set("Accept", "application/json")
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", I.APIToken))
+
+	// Allow no API Token requests
+	if I.APIToken != "" {
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", I.APIToken))
+	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error sending IPInfoRequest http request, %w", err)
 	}
 
 	if err := response.Unmarshal(resp.Body); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error unmarshaling IPInfoResponse, %w", err)
 	}
 
 	return response, nil

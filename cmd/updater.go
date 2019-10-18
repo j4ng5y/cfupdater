@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -39,7 +40,7 @@ var (
 func cfupdaterFunc(ccmd *cobra.Command, args []string) {
 	config, err := config.New(configFilePath)
 	if err != nil {
-		debug.Fatal(err)
+		debug.Fatal(errors.Unwrap(err))
 	}
 
 	recReq := &cf.DNSRecordRequest{
@@ -50,7 +51,7 @@ func cfupdaterFunc(ccmd *cobra.Command, args []string) {
 	}
 	recResp, err := recReq.Get()
 	if err != nil {
-		debug.Fatal(err)
+		debug.Fatal(errors.Unwrap(err))
 	}
 
 	ipReq := &ip.IPInfoRequest{
@@ -59,7 +60,7 @@ func cfupdaterFunc(ccmd *cobra.Command, args []string) {
 	}
 	ipResp, err := ipReq.Get()
 	if err != nil {
-		debug.Fatal(err)
+		debug.Fatal(errors.Unwrap(err))
 	}
 
 	if recResp.Result[0].Content == ipResp.IP {
@@ -80,7 +81,7 @@ func cfupdaterFunc(ccmd *cobra.Command, args []string) {
 	}
 	recUpdateResp, err := recUpdateReq.Update()
 	if err != nil {
-		debug.Fatal(err)
+		debug.Fatal(errors.Unwrap(err))
 	}
 
 	debug.Printf("IPInfo IP Address: %s, CloudFlare DNS Record Address: %s, Result: %v\n", ipResp.IP, recResp.Result[0].Content, recUpdateResp)
@@ -94,7 +95,7 @@ func cfupdaterConfigFunc(ccmd *cobra.Command, args []string) {
 	config.IPInfo.General.APIToken = ipinfoAPIToken
 
 	if err := config.Write(); err != nil {
-		log.Fatal(err)
+		debug.Fatal(errors.Unwrap(err))
 	}
 }
 
@@ -118,12 +119,12 @@ func init() {
 func main() {
 	f, err := os.OpenFile("./debug.log", os.O_CREATE|os.O_RDWR|os.O_APPEND, 0660)
 	if err != nil {
-		log.Fatalf("unable to open debug file due to error: %v", err)
+		log.Fatalf("unable to open debug file due to error: %v", errors.Unwrap(err))
 	}
 
 	debug = log.New(f, "", log.Ldate|log.Ltime|log.Lshortfile)
 
 	if err := CFupdaterCmd.Execute(); err != nil {
-		debug.Fatal(err)
+		debug.Fatal(errors.Unwrap(err))
 	}
 }

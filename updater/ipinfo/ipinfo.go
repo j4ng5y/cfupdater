@@ -2,6 +2,7 @@ package updater
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 )
@@ -35,8 +36,11 @@ type IPInfoResponse struct {
 func (I *IPInfoResponse) Unmarshal(body io.ReadCloser) error {
 	data, err := ioutil.ReadAll(body)
 	if err != nil {
-		return err
+		return fmt.Errorf("error reading http body, %w", err)
 	}
 
-	return json.Unmarshal(data, I)
+	if err := json.Unmarshal(data, I); err != nil {
+		return fmt.Errorf("error unmarshaling http body to IPInfoResponse, %w", err)
+	}
+	return nil
 }

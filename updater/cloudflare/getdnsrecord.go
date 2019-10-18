@@ -24,7 +24,7 @@ func (D *DNSRecordRequest) Get() (*DNSRecordResponse, error) {
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, D.URL, nil)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error creating DNSRecordRequest http request: %w", err)
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -32,11 +32,11 @@ func (D *DNSRecordRequest) Get() (*DNSRecordResponse, error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error sending DNSRecordRequest http request: %w", err)
 	}
 
 	if err := response.Unmarshal(resp.Body); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error unmarshaling DNSRecordResponse: %w", err)
 	}
 
 	if !response.Success {

@@ -51,7 +51,7 @@ func New(filePath string) (*Config, error) {
 
 	s, err := os.Stat(filePath)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error getting stats on %s, %w", filePath, err)
 	}
 
 	if s.IsDir() {
@@ -60,16 +60,16 @@ func New(filePath string) (*Config, error) {
 
 	f, err := os.Open(filePath)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error opening %s, %w", filePath, err)
 	}
 
 	b, err := ioutil.ReadAll(f)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error reading %s, %w", filePath, err)
 	}
 
 	if err := yaml.Unmarshal(b, config); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error unmarshaling contents of %s, %w", filePath, err)
 	}
 
 	return config, nil
@@ -87,18 +87,18 @@ func (C *Config) Write() error {
 
 	f, err := os.OpenFile(defaultConfigFile, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0660)
 	if err != nil {
-		return err
+		return fmt.Errorf("error opening %s, %w", defaultConfigFile, err)
 	}
 	defer f.Close()
 
 	y, err := yaml.Marshal(C)
 	if err != nil {
-		return err
+		return fmt.Errorf("error marshaling the Config contents to %s, %w", defaultConfigFile, err)
 	}
 
 	_, err = f.Write(y)
 	if err != nil {
-		return err
+		return fmt.Errorf("error writing the Config contents to %s, %w", defaultConfigFile, err)
 	}
 
 	return nil
